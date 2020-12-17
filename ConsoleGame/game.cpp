@@ -4,9 +4,11 @@
 
 Game::Game(unsigned int sizeX, unsigned int sizeY, char spaceChar, bool addFrames, bool replaceSpaceByFrame, char frameChar, unsigned int playerPositionX, unsigned int playerPositionY, char playerSprite, char pointSprite)
     :m_board(sizeX, sizeY, spaceChar, addFrames, replaceSpaceByFrame, frameChar), m_points(0)
-{
-    //===checking values===
-    
+{    
+    //reparing sizes
+    sizeX = m_board.getSizeX();
+    sizeY = m_board.getSizeY();
+
     //checking player position
     if (sizeX <= playerPositionX) playerPositionX = sizeX - 1;
     if (sizeY <= playerPositionY) playerPositionY = sizeY - 1;
@@ -106,18 +108,29 @@ void Game::newPositionOfPoint(bool setSeed)
 
 void Game::move(Direction direction)
 {    
+    //switch that checks direction
+    switch (direction)
+    {
     //left checking
-    if(direction == Direction::LEFT)
+    case Direction::LEFT:
         m_player.newPositionX(m_player.getPositionX() - 1);
+        break;
+
     //up checking
-    else if (direction == Direction::UP)
+    case Direction::UP:
         m_player.newPositionY(m_player.getPositionY() - 1);
+        break;
+
     //right checking
-    else if (direction == Direction::RIGHT)
+    case Direction::RIGHT:
         m_player.newPositionX(m_player.getPositionX() + 1);
-    //left checking
-    else if (direction == Direction::DOWN)
+        break;
+
+    //down checking
+    case Direction::DOWN:
         m_player.newPositionY(m_player.getPositionY() + 1);
+        break;
+    }
 }
 
 bool Game::positionCheck()

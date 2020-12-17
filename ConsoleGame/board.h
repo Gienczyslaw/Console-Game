@@ -106,11 +106,11 @@ public:
     char getCharOfSpace();
 
     /// <summary>
-    /// Says is position of object on frame.
+    /// Says is position of object on frame or out of board.
     /// </summary>
     /// <param name="positionX">- position of object on axle x.</param>
     /// <param name="positionY">- position of object on axle y.</param>
-    /// <returns>Information about that is object on frame.</returns>
+    /// <returns>Information about that is object on frame or out of board.</returns>
     bool isOnFrame(unsigned int positionX, unsigned int positionY);
 
 private:

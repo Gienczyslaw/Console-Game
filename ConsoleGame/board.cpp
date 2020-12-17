@@ -4,17 +4,21 @@
 #include <time.h>
 
 Board::Board(unsigned int sizeX, unsigned int sizeY, char spaceChar, bool addFrames, bool replaceSpaceByFrame, char frameChar)
-	:m_frames(addFrames), m_sizeX(sizeX), m_sizeY(sizeY), m_space(spaceChar), m_frame(frameChar)
+	:m_frames(addFrames), m_space(spaceChar), m_frame(frameChar)
 {
 	//Greating value to avoid problems
 	if (sizeX < 2) sizeX = 2;
 	if (sizeY < 2) sizeY = 2;
 
-	if (replaceSpaceByFrame && addFrames)
+	if (addFrames && replaceSpaceByFrame)
 	{
 		if (sizeX < 4) sizeX = 4;
 		if (sizeY < 4) sizeY = 4;
 	}
+
+	//Setting m_sizes
+	m_sizeX = sizeX;
+	m_sizeY = sizeY;
 
 	//Preparing to make board
 	m_gamePool = new vector<vector<char>*>();
@@ -68,6 +72,13 @@ Board::Board(unsigned int sizeX, unsigned int sizeY, char spaceChar, bool addFra
 		{
 			m_gamePool->back()->push_back(frameChar);
 		}
+	}
+
+	//Reparing sizes
+	if (addFrames && !replaceSpaceByFrame)
+	{
+		m_sizeX += 2;
+		m_sizeY += 2;
 	}
 }
 
@@ -168,10 +179,10 @@ unsigned int Board::getRanNumInsideOnX(bool setSeed) const
 	//checking does board have frames
 	if (m_frames)
 		//returning value
-		return rand() % (m_sizeX - 3)+1;
+		return rand() % (m_sizeX - 2)+1;
 	else
 		//returning value
-		return rand() % (m_sizeX - 1);
+		return rand() % m_sizeX;
 }
 
 unsigned int Board::getRanNumInsideOnY(bool setSeed) const
@@ -183,10 +194,10 @@ unsigned int Board::getRanNumInsideOnY(bool setSeed) const
 	//checking does board have frames
 	if (m_frames)
 		//returning value
-		return rand() % (m_sizeY - 3) + 1;
+		return rand() % (m_sizeY - 2) + 1;
 	else
 		//returning value
-		return rand() % (m_sizeY - 1);
+		return rand() % m_sizeY;
 }
 
 std::pair<unsigned int, unsigned int> Board::getRanNumInside(bool setSeed) const
@@ -227,6 +238,13 @@ bool Board::isOnFrame(unsigned int positionX, unsigned int positionY)
 		if (positionX == 0 || positionX == m_sizeX-1) return true;
 		//return true if position is on frame Y
 		if (positionY == 0 || positionY == m_sizeY-1) return true;
+	}
+	else
+	{
+		//return true if position is on frame X
+		if (positionX == (unsigned int)-1 || positionX == m_sizeX) return true;
+		//return true if position is on frame Y
+		if (positionY == (unsigned int)-1 || positionY == m_sizeY) return true;
 	}
 	//returns value
 	return false;

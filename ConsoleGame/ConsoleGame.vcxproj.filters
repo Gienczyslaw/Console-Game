@@ -30,9 +30,6 @@
     <ClCompile Include="direction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="bin.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">

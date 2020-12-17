@@ -139,7 +139,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="bin.cpp" />
     <ClCompile Include="board.cpp" />
     <ClCompile Include="direction.cpp" />
     <ClCompile Include="main.cpp" />
