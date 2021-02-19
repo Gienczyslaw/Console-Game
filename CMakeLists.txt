@@ -24,7 +24,7 @@ if(WIN32 OR MSVC)
 	link_directories("${CMAKE_CURRENT_SOURCE_DIR}/lib/pdcurses/")
 	
 	add_library(curses UNKNOWN IMPORTED)
-	set_target_properties(curses PROPERTIES IMPORTED_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/lib/pdcurses/windows/x64/pdcurses.lib")
+	set_target_properties(curses PROPERTIES IMPORTED_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/lib/pdcurses/windows/pdcurses.lib")
 
 	target_link_libraries(ConsoleGame curses)
 endif()
