@@ -73,16 +73,16 @@ private:
     /// <summary>
     /// It's positon of point on axis X.
     /// </summary>
-    unsigned int m_positionX;
+    unsigned int _positionX;
 
     /// <summary>
     /// It's positon of point on axis Y.
     /// </summary>
-    unsigned int m_positionY;
+    unsigned int _positionY;
 
     /// <summary>
     /// Specifies which character will illustrate the positioned object.
     /// </summary>
-    char m_sprite;
+    char _sprite;
 };
 

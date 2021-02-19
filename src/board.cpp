@@ -1,10 +1,12 @@
 #include "Board.h"
-#include <iostream>
+
+#ifdef CURSES_AVAILABLE
 #include <algorithm>
 #include <time.h>
 
+
 Board::Board(unsigned int sizeX, unsigned int sizeY, char spaceChar, bool addFrames, bool replaceSpaceByFrame, char frameChar)
-	:m_frames(addFrames), m_space(spaceChar), m_frame(frameChar)
+	:_frames(addFrames), _space(spaceChar), _frame(frameChar)
 {
 	//Greating value to avoid problems
 	if (sizeX < 2) sizeX = 2;
@@ -16,12 +18,12 @@ Board::Board(unsigned int sizeX, unsigned int sizeY, char spaceChar, bool addFra
 		if (sizeY < 4) sizeY = 4;
 	}
 
-	//Setting m_sizes
-	m_sizeX = sizeX;
-	m_sizeY = sizeY;
+	//Setting _sizes
+	_sizeX = sizeX;
+	_sizeY = sizeY;
 
 	//Preparing to make board
-	m_gamePool = new vector<vector<char>*>();
+	_gamePool = new vector<vector<char>*>();
 
 	//Declarating lambda that will help loops
 	auto replaceSpace = [addFrames, replaceSpaceByFrame]()
@@ -36,10 +38,10 @@ Board::Board(unsigned int sizeX, unsigned int sizeY, char spaceChar, bool addFra
 	//===Adding top frame===
 	if (addFrames)
 	{
-		m_gamePool->push_back(new vector<char>());
+		_gamePool->push_back(new vector<char>());
 		for (int i = 0; i < sizeX && replaceSpace() || i < sizeX + 2 && !replaceSpace(); i++)
 		{
-			m_gamePool->back()->push_back(frameChar);
+			_gamePool->back()->push_back(frameChar);
 		}
 	}
 
@@ -48,51 +50,51 @@ Board::Board(unsigned int sizeX, unsigned int sizeY, char spaceChar, bool addFra
 	//Start of loop
 	for (int i = 0; i < sizeY - 2 && replaceSpace() || i < sizeY && !replaceSpace(); i++)
 	{
-		m_gamePool->push_back(new vector<char>());
+		_gamePool->push_back(new vector<char>());
 
 		//Adding left frame
-		if (addFrames) m_gamePool->back()->push_back(frameChar);
+		if (addFrames) _gamePool->back()->push_back(frameChar);
 
 		//Adding board
 		for (int i = 0; i < sizeX - 2 && replaceSpace() || i < sizeX && !replaceSpace(); i++)
 		{
-			m_gamePool->back()->push_back(spaceChar);
+			_gamePool->back()->push_back(spaceChar);
 		}
 
 		//Adding right frame
-		if (addFrames) m_gamePool->back()->push_back(frameChar);
+		if (addFrames) _gamePool->back()->push_back(frameChar);
 	}
 	
 
 	//===Adding bottom frame===
 	if (addFrames)
 	{
-		m_gamePool->push_back(new vector<char>());
+		_gamePool->push_back(new vector<char>());
 		for (int i = 0; i < sizeX && replaceSpace() || i < sizeX + 2 && !replaceSpace(); i++)
 		{
-			m_gamePool->back()->push_back(frameChar);
+			_gamePool->back()->push_back(frameChar);
 		}
 	}
 
 	//Reparing sizes
 	if (addFrames && !replaceSpaceByFrame)
 	{
-		m_sizeX += 2;
-		m_sizeY += 2;
+		_sizeX += 2;
+		_sizeY += 2;
 	}
 }
 
 Board::~Board()
 {
 	//loop working on axles y
-	for (int i = 0; i < m_gamePool->size(); i++)
+	for (int i = 0; i < _gamePool->size(); i++)
 	{
 		//deleting one axle x
-		delete m_gamePool->at(i);
+		delete _gamePool->at(i);
 	}
 
 	//deleting all vector
-	delete m_gamePool;
+	delete _gamePool;
 }
 
 vector<vector<char>> Board::getCharacters(unsigned int xStart, unsigned int yStart, unsigned int xEnd, unsigned int yEnd) const
@@ -113,7 +115,7 @@ vector<vector<char>> Board::getCharacters(unsigned int xStart, unsigned int ySta
 		for (int j = xStart; j < xEnd; j++)
 		{
 			//pushing to vector right value
-			toReturn.back().push_back(m_gamePool->at(i)->at(j));
+			toReturn.back().push_back(_gamePool->at(i)->at(j));
 		}
 	}
 	
@@ -133,7 +135,7 @@ void Board::changeCharacters(unsigned int xStart, unsigned int yStart, unsigned 
 		for (int j = xStart; j < xEnd; j++)
 		{
 			//changing right element with replacement
-			m_gamePool->at(i)->at(j) = replacement;
+			_gamePool->at(i)->at(j) = replacement;
 		}
 	}
 }
@@ -146,7 +148,7 @@ void Board::changeCharacter(char replacement, unsigned int positionX, unsigned i
 	checkVariableY(positionY, false);
 
 	//replacing
-	m_gamePool->at(positionY)->at(positionX) = replacement;
+	_gamePool->at(positionY)->at(positionX) = replacement;
 }
 
 void Board::display(unsigned int xStart, unsigned int yStart, unsigned int xEnd, unsigned int yEnd) const
@@ -163,10 +165,10 @@ void Board::display(unsigned int xStart, unsigned int yStart, unsigned int xEnd,
 		for (int j = 0; j < v[i].size(); j++)
 		{
 			//displaying on console
-			std::cout << v[i][j];
+			printw("%c", v[i][j]);
 		}
 		//making new line
-		std::cout << std::endl;
+		printw("\n");
 	}
 }
 
@@ -177,12 +179,12 @@ unsigned int Board::getRanNumInsideOnX(bool setSeed) const
 		srand(time(NULL));
 
 	//checking does board have frames
-	if (m_frames)
+	if (_frames)
 		//returning value
-		return rand() % (m_sizeX - 2)+1;
+		return rand() % (_sizeX - 2)+1;
 	else
 		//returning value
-		return rand() % m_sizeX;
+		return rand() % _sizeX;
 }
 
 unsigned int Board::getRanNumInsideOnY(bool setSeed) const
@@ -192,12 +194,12 @@ unsigned int Board::getRanNumInsideOnY(bool setSeed) const
 		srand(time(NULL));
 
 	//checking does board have frames
-	if (m_frames)
+	if (_frames)
 		//returning value
-		return rand() % (m_sizeY - 2) + 1;
+		return rand() % (_sizeY - 2) + 1;
 	else
 		//returning value
-		return rand() % m_sizeY;
+		return rand() % _sizeY;
 }
 
 std::pair<unsigned int, unsigned int> Board::getRanNumInside(bool setSeed) const
@@ -209,42 +211,42 @@ std::pair<unsigned int, unsigned int> Board::getRanNumInside(bool setSeed) const
 unsigned int Board::getSizeX() const
 {
 	//returning value
-	return m_gamePool->back()->size();
+	return _gamePool->back()->size();
 }
 
 unsigned int Board::getSizeY() const
 {
 	//returning value
-	return m_gamePool->size();
+	return _gamePool->size();
 }
 
 std::pair<unsigned int, unsigned int> Board::getSize() const
 {
 	//returning value
-	return std::pair<unsigned int, unsigned int>(m_gamePool->back()->size(), m_gamePool->size());
+	return std::pair<unsigned int, unsigned int>(_gamePool->back()->size(), _gamePool->size());
 }
 
 char Board::getCharOfSpace()
 {
-	return m_space;
+	return _space;
 }
 
 bool Board::isOnFrame(unsigned int positionX, unsigned int positionY)
 {
 	//checks are there frames at all
-	if (m_frames)
+	if (_frames)
 	{
 		//return true if position is on frame X
-		if (positionX == 0 || positionX == m_sizeX-1) return true;
+		if (positionX == 0 || positionX == _sizeX-1) return true;
 		//return true if position is on frame Y
-		if (positionY == 0 || positionY == m_sizeY-1) return true;
+		if (positionY == 0 || positionY == _sizeY-1) return true;
 	}
 	else
 	{
 		//return true if position is on frame X
-		if (positionX == (unsigned int)-1 || positionX == m_sizeX) return true;
+		if (positionX == (unsigned int)-1 || positionX == _sizeX) return true;
 		//return true if position is on frame Y
-		if (positionY == (unsigned int)-1 || positionY == m_sizeY) return true;
+		if (positionY == (unsigned int)-1 || positionY == _sizeY) return true;
 	}
 	//returns value
 	return false;
@@ -253,42 +255,42 @@ bool Board::isOnFrame(unsigned int positionX, unsigned int positionY)
 
 void Board::checkVariableX(unsigned int& position, bool takeFramesIntoAccount) const
 {
-	//cheking does m_frames equal true
-	if (takeFramesIntoAccount && m_frames)
+	//cheking does _frames equal true
+	if (takeFramesIntoAccount && _frames)
 	{
 		//cheking are start values too small
 		if (position == 0) position = 1;
 		//cheking are start values too big
-		else if (position >= m_gamePool->back()->size()) position = m_gamePool->back()->size()-1;
+		else if (position >= _gamePool->back()->size()) position = _gamePool->back()->size()-1;
 	}
-	else if (position >= m_gamePool->back()->size())
+	else if (position >= _gamePool->back()->size())
 	{
 		//cheking are start values too big
-		position = m_gamePool->back()->size();
+		position = _gamePool->back()->size();
 	}
 }
 
 void Board::checkVariableY(unsigned int& position, bool takeFramesIntoAccount) const
 {
-	//cheking does m_frames equal true
-	if (takeFramesIntoAccount && m_frames)
+	//cheking does _frames equal true
+	if (takeFramesIntoAccount && _frames)
 	{
 		//cheking are start values too small
 		if (position == 0) position = 1;
 		//cheking are start values too big
-		else if (position >= m_gamePool->size()) position = m_gamePool->size()-1;
+		else if (position >= _gamePool->size()) position = _gamePool->size()-1;
 	}
-	else if (position > m_gamePool->size())
+	else if (position > _gamePool->size())
 	{
 		//cheking are start values too big
-		position = m_gamePool->size();
+		position = _gamePool->size();
 	}
 }
 
 void Board::specialCheckVariables(unsigned int& xStart, unsigned int& yStart, unsigned int& xEnd, unsigned int& yEnd, bool takeFramesIntoAccount, bool swap, bool zeroIsAll) const
 {	
 	//greating values is there are frames
-	if (takeFramesIntoAccount && m_frames)
+	if (takeFramesIntoAccount && _frames)
 	{
 		//replacing xStart
 		if (xStart == 0)
@@ -303,7 +305,7 @@ void Board::specialCheckVariables(unsigned int& xStart, unsigned int& yStart, un
 	auto getSubtrahend = [takeFramesIntoAccount, this]()
 	{
 		//returning 2 if there are rames
-		if (takeFramesIntoAccount && this->m_frames)
+		if (takeFramesIntoAccount && this->_frames)
 			return 2;
 		//returning 0
 		else
@@ -316,11 +318,11 @@ void Board::specialCheckVariables(unsigned int& xStart, unsigned int& yStart, un
 	{
 		//replacing xEnd
 		if (xEnd == 0)
-			xEnd = m_gamePool->back()->size() - getSubtrahend();
+			xEnd = _gamePool->back()->size() - getSubtrahend();
 
 		//replacing yEnd
 		if (yEnd == 0)
-			yEnd = m_gamePool->size() - getSubtrahend();
+			yEnd = _gamePool->size() - getSubtrahend();
 	}
 	//reducing values if that is necessity
 	else
@@ -348,5 +350,6 @@ void Board::specialCheckVariables(unsigned int& xStart, unsigned int& yStart, un
 	if (yStart > yEnd && swap) std::swap(yStart, yEnd);
 
 	//you can uncomment it to check is method working well
-	//std::cout << xStart << " " << yStart << " " << xEnd << " " << yEnd << "\n";
+	//printw("Points: %u %u %u %u\n", xStart, yStart, xEnd, yEnd);
 }
+#endif

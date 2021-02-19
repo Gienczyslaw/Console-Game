@@ -1,5 +1,6 @@
 #pragma once
 
+#include "libs.h"
 #include <vector>
 
 using std::vector;
@@ -143,30 +144,30 @@ private:
     /// <summary>
     /// Says does board have frames.
     /// </summary>
-    bool m_frames;
+    bool _frames;
 
     /// <summary>
     /// Specifies which character will be used to make a free space, actual board.
     /// </summary>
-    char m_space;
+    char _space;
 
     /// <summary>
     /// Specifies which character will be used to make a frame.
     /// </summary>
-    char m_frame;
+    char _frame;
 
     /// <summary>
     /// Specifies board's size on axle X.
     /// </summary>
-    int m_sizeX;
+    int _sizeX;
 
     /// <summary>
     /// Specifies board's size on axle Y.
     /// </summary>
-    int m_sizeY;
+    int _sizeY;
 
     /// <summary>
     /// Array that contains character which create the board.
     /// </summary>
-    mutable vector<vector<char>*>* m_gamePool;
+    mutable vector<vector<char>*>* _gamePool;
 };

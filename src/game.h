@@ -1,14 +1,14 @@
 #pragma once
 
-#include "positioned.h"
 #include "board.h"
+#include "positioned.h"
 #include "direction.h"
 
 /// <summary>
 /// Game class.
 /// </summary>
 class Game 
-{//TODO: XML comments
+{
 public:
     /// <summary>
     /// Constructor.
@@ -41,6 +41,12 @@ public:
     /// <param name="cleanBoard">- If it's true function cleans console. It's using system("cls").</param>
     /// <param name="showPosition">- If it's true function displays position of player under board.</param>
     void show(bool cleanBoard = true, bool showPoints = true, bool showPosition = false);
+    
+    /// <summary>
+    /// It's telling do game has been ended. It's ending when player give 'e' character.
+    /// </summary>
+    /// <returns>True if game has been ended false if not.</returns>
+    bool isEnded();
 
 private:
     /// <summary>
@@ -80,22 +86,27 @@ private:
     bool positionCheck();
 
     /// <summary>
+    /// Tells is game ended.
+    /// </summary>
+    bool _ended;
+
+    /// <summary>
     /// Says how many times m_point and m_player was on same position.
     /// </summary>
-    unsigned int m_points;
+    unsigned int _points;
 
     /// <summary>
     /// Point object.
     /// </summary>
-    Positioned m_point;
+    Positioned _point;
 
     /// <summary>
     /// Object that will be moving on console.
     /// </summary>
-    Positioned m_player;
+    Positioned _player;
 
     /// <summary>
     /// There are all character that make up the board
     /// </summary>
-    Board m_board;
+    Board _board;
 };
