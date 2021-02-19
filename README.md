@@ -24,7 +24,7 @@ Project is created with:
 * [CMake](https://cmake.org/)
 * [PDCurses-3.9 (edited to x64)](https://github.com/wmcbrine/PDCurses)
 	
-# TODO:
+## TODO:
 * Enemies
 * Different values of points
 
@@ -32,4 +32,4 @@ Project is created with:
 Project is in progress cause I still have some stuffs to do (see at TODO).
 
 ## Contact
-Created by [Gienczys³aw](https://github.com/Gienczyslaw) - you can contact me by email gienczyslawprzeor@gmail.com
+Created by [Gienczyslaw](https://github.com/Gienczyslaw) - you can contact me by email gienczyslawprzeor@gmail.com
